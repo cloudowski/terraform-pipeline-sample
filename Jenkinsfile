@@ -7,17 +7,15 @@ pipeline {
       agent { kubernetes { yamlFile "ci/pods.yaml" } }
 
       steps {
-          container('terraform') {
-              sh """
-                export TF_IN_AUTOMATION=1
-                export TF_CLI_ARGS="-no-color"
+        container('terraform') {
+            sh """
+            export TF_IN_AUTOMATION=1
+            export TF_CLI_ARGS="-no-color"
 
-                terraform init
-                terraform plan -out tf.plan
-              """
-              stash name: 'tf', includes: '.terraform/,tf.plan'
-            }
-          }
+            terraform init
+            terraform plan -out tf.plan
+            """
+            stash name: 'tf', includes: '.terraform/,tf.plan'
         }
       }
     }
@@ -49,9 +47,7 @@ pipeline {
                 export TF_CLI_ARGS="-no-color"
                 terraform apply tf.plan
               """
-            }
           }
-        }
       }
       when {
         branch 'master'
