@@ -1,5 +1,9 @@
 pipeline {
   agent none
+  options {
+    ansiColor('css')
+  }
+  
 
   stages {
     
@@ -10,7 +14,7 @@ pipeline {
         container('terraform') {
             sh """
             export TF_IN_AUTOMATION=1
-            export TF_CLI_ARGS="-no-color"
+            #export TF_CLI_ARGS="-no-color"
 
             terraform init
             terraform plan -out tf.plan
@@ -19,22 +23,6 @@ pipeline {
         }
       }
     }
-
-
-    // stage('Approve before apply') {
-    //   agent none
-    //   options {
-    //     timeout(time: 1, unit: 'DAYS') 
-    //   }
-    //   steps {
-    //     input message: "Deploy to stage?"
-    //   }
-    //   when {
-    //     beforeAgent true
-    //     beforeInput true
-    //     branch 'master'
-    //   }
-    // }
 
     stage('Deploy') {
       agent { kubernetes { yamlFile "ci/pods.yaml" } }
@@ -50,7 +38,7 @@ pipeline {
               unstash name: 'tf'
               sh """
                 export TF_IN_AUTOMATION=1
-                export TF_CLI_ARGS="-no-color"
+                #export TF_CLI_ARGS="-no-color"
                 terraform apply tf.plan
               """
           }
