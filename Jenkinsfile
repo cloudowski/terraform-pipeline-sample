@@ -40,9 +40,9 @@ pipeline {
       agent { kubernetes { yamlFile "ci/pods.yaml" } }
 
       milestone(10)
-      
+
       input {
-          message: "Deploy to stage?"
+          message "Apply plan?"
       }
 
       steps {
