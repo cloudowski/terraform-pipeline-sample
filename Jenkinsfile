@@ -23,7 +23,7 @@ pipeline {
     }
 
 
-    stage('Approve stage deployment') {
+    stage('Approve before apply') {
       agent none
       options {
         timeout(time: 1, unit: 'DAYS') 
@@ -57,7 +57,6 @@ pipeline {
         branch 'master'
       }
     }
-
 
   }
 }
