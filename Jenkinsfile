@@ -21,23 +21,27 @@ pipeline {
     }
 
 
-    stage('Approve before apply') {
-      agent none
-      options {
-        timeout(time: 1, unit: 'DAYS') 
-      }
-      steps {
-        input message: "Deploy to stage?"
-      }
-      when {
-        beforeAgent true
-        beforeInput true
-        branch 'master'
-      }
-    }
+    // stage('Approve before apply') {
+    //   agent none
+    //   options {
+    //     timeout(time: 1, unit: 'DAYS') 
+    //   }
+    //   steps {
+    //     input message: "Deploy to stage?"
+    //   }
+    //   when {
+    //     beforeAgent true
+    //     beforeInput true
+    //     branch 'master'
+    //   }
+    // }
 
     stage('Deploy') {
       agent { kubernetes { yamlFile "ci/pods.yaml" } }
+
+      input {
+          message: "Deploy to stage?"
+      }
 
       steps {
           container('terraform') {
@@ -50,6 +54,8 @@ pipeline {
           }
       }
       when {
+        beforeAgent true
+        beforeInput true
         branch 'master'
       }
     }
