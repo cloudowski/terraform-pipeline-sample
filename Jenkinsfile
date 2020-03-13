@@ -8,6 +8,7 @@ pipeline {
 
       steps {
         container('terraform') {
+          ansiColor('css') {
             sh """
             export TF_IN_AUTOMATION=1
             export TF_CLI_ARGS="-no-color"
@@ -16,6 +17,7 @@ pipeline {
             terraform plan -out tf.plan
             """
             stash name: 'tf', includes: '.terraform/,tf.plan'
+          }
         }
       }
     }
@@ -32,11 +34,13 @@ pipeline {
           milestone(10)
           container('terraform') {
               unstash name: 'tf'
-              sh """
-                export TF_IN_AUTOMATION=1
-                export TF_CLI_ARGS="-no-color"
-                terraform apply tf.plan
-              """
+              ansiColor('css') {
+                sh """
+                    export TF_IN_AUTOMATION=1
+                    export TF_CLI_ARGS="-no-color"
+                    terraform apply tf.plan
+                """
+              }
           }
       }
       when {
