@@ -1,5 +1,9 @@
 pipeline {
   agent none
+  options {
+    ansiColor('css')
+  }
+  
 
   stages {
     
@@ -8,7 +12,6 @@ pipeline {
 
       steps {
         container('terraform') {
-          ansiColor('vga') {
             sh """
             export TF_IN_AUTOMATION=1
             #export TF_CLI_ARGS="-no-color"
@@ -17,7 +20,6 @@ pipeline {
             terraform plan -out tf.plan
             """
             stash name: 'tf', includes: '.terraform/,tf.plan'
-          }
         }
       }
     }
@@ -34,13 +36,11 @@ pipeline {
           milestone(10)
           container('terraform') {
               unstash name: 'tf'
-              ansiColor('vga') {
-                sh """
-                    export TF_IN_AUTOMATION=1
-                    #export TF_CLI_ARGS="-no-color"
-                    terraform apply tf.plan
-                """
-              }
+              sh """
+                export TF_IN_AUTOMATION=1
+                #export TF_CLI_ARGS="-no-color"
+                terraform apply tf.plan
+              """
           }
       }
       when {
