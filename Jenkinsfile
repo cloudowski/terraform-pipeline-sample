@@ -8,10 +8,10 @@ pipeline {
 
       steps {
         container('terraform') {
-          ansiColor('css') {
+          ansiColor('vga') {
             sh """
             export TF_IN_AUTOMATION=1
-            export TF_CLI_ARGS="-no-color"
+            #export TF_CLI_ARGS="-no-color"
 
             terraform init
             terraform plan -out tf.plan
@@ -34,10 +34,10 @@ pipeline {
           milestone(10)
           container('terraform') {
               unstash name: 'tf'
-              ansiColor('css') {
+              ansiColor('vga') {
                 sh """
                     export TF_IN_AUTOMATION=1
-                    export TF_CLI_ARGS="-no-color"
+                    #export TF_CLI_ARGS="-no-color"
                     terraform apply tf.plan
                 """
               }
